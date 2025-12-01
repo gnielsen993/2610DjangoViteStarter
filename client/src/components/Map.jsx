@@ -25,7 +25,7 @@ function MapClickHandler({onMapClick}) {
     return null;
 }
 
-function Map() {
+function PinMap() {
     const [pins, setPins] = useState([]);
     const [center] = useState([51.505, -0.09]);
 
@@ -64,4 +64,4 @@ function Map() {
     );
 }
 
-export default Map;
+export default PinMap;
