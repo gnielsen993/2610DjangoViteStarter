@@ -55,7 +55,7 @@ function PinMap() {
                 {pins.map((pin) => (
                     <Marker key={pin.id} position={[pin.lat, pin.lng]}>
                         <Popup>
-                            <Strong> {pin.title} </Strong>
+                            {pin.title}
                         </Popup>
                     </Marker>
                 ))}
