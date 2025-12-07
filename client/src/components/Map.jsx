@@ -84,7 +84,7 @@ function PinMap() {
         formDataToSend.append('image', formData.image);
       }
 
-      const response = await fetch('/api/pins/create/', {
+      const response = await fetch('/api/pins/add/', {
         method: 'POST',
         credentials: 'same-origin',
         body: formDataToSend,
