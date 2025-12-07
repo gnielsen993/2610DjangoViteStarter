@@ -17,7 +17,7 @@ def get_pins(request):
 @csrf_exempt
 def add_pin(request):
     if request.method == 'POST':
-        if request.file:
+        if request.FILES:
             image = request.FILES.get('image')
         else:
             image = None
@@ -30,7 +30,7 @@ def add_pin(request):
             longitude=data.get('longitude'),
             image=image
         )
-        
+
         return JsonResponse({
             'id': pin.id,
             'title': pin.title,
