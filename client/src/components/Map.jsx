@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
+import './Map.css';
 import L from 'leaflet';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -26,10 +27,11 @@ function MapClickHandler({ onMapClick }) {
 
 function PinMap() {
   const [pins, setPins] = useState([]);
-  const [center] = useState([41.7370, -111.8338]);
+  const [center] = useState([41.7370, -111.8338]); 
   const [showForm, setShowForm] = useState(false);
   const [newPinLocation, setNewPinLocation] = useState(null);
-  const [formData, setFormData] = useState({ title: '', description: '' });
+  const [formData, setFormData] = useState({ title: '', description: '', image: null });
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     loadPins();
@@ -55,29 +57,45 @@ function PinMap() {
     setShowForm(true);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, image: file });
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     
     try {
-      const response = await fetch('/api/pins/add/', {
+      const formDataToSend = new FormData();
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('latitude', newPinLocation.lat);
+      formDataToSend.append('longitude', newPinLocation.lng);
+      
+      if (formData.image) {
+        formDataToSend.append('image', formData.image);
+      }
+
+      const response = await fetch('/api/pins/create/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'same-origin',
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          latitude: newPinLocation.lat,
-          longitude: newPinLocation.lng,
-        }),
+        body: formDataToSend,
       });
 
       if (response.ok) {
         const newPin = await response.json();
         setPins([...pins, newPin]);
         setShowForm(false);
-        setFormData({ title: '', description: '' });
+        setFormData({ title: '', description: '', image: null });
+        setImagePreview(null);
         setNewPinLocation(null);
       } else {
         console.error('Error creating pin');
@@ -110,17 +128,14 @@ function PinMap() {
 
   const handleCancelForm = () => {
     setShowForm(false);
-    setFormData({ title: '', description: '' });
+    setFormData({ title: '', description: '', image: null });
+    setImagePreview(null);
     setNewPinLocation(null);
   };
 
   return (
-    <div style={{ height: '100vh', width: '100%', position: 'relative' }}>
-      <MapContainer
-        center={center}
-        zoom={13}
-        style={{ height: '100%', width: '100%' }}
-      >
+    <div className="map-container">
+      <MapContainer center={center} zoom={13}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -130,21 +145,20 @@ function PinMap() {
         
         {pins.map((pin) => (
           <Marker key={pin.id} position={[pin.latitude, pin.longitude]}>
-            <Popup>
-              <div>
-                <strong>{pin.title}</strong>
-                {pin.description && <p>{pin.description}</p>}
+            <Popup maxWidth={300}>
+              <div className="pin-popup">
+                <strong className="pin-popup-title">{pin.title}</strong>
+                {pin.description && <p className="pin-popup-description">{pin.description}</p>}
+                {pin.image && (
+                  <img 
+                    src={pin.image} 
+                    alt={pin.title}
+                    className="pin-popup-image"
+                  />
+                )}
                 <button 
                   onClick={() => handleDeletePin(pin.id)}
-                  style={{
-                    backgroundColor: '#ff4444',
-                    color: 'white',
-                    border: 'none',
-                    padding: '5px 10px',
-                    borderRadius: '3px',
-                    cursor: 'pointer',
-                    marginTop: '5px'
-                  }}
+                  className="pin-delete-btn"
                 >
                   Delete
                 </button>
@@ -155,86 +169,52 @@ function PinMap() {
       </MapContainer>
 
       {showForm && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-          zIndex: 1000,
-          minWidth: '300px',
-          color: '#333'
-        }}>
-          <h2 style={{ marginTop: 0 }}>Create New Pin</h2>
+        <div className="pin-form-overlay">
+          <h2 className="pin-form-title">Create New Pin</h2>
           <form onSubmit={handleFormSubmit}>
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px' }}>
-                Title *
-              </label>
+            <div className="form-group">
+              <label className="form-label">Title *</label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  boxSizing: 'border-box'
-                }}
+                className="form-input"
               />
             </div>
             
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px' }}>
-                Description
-              </label>
+            <div className="form-group">
+              <label className="form-label">Description</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows="3"
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  boxSizing: 'border-box'
-                }}
+                className="form-textarea"
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                type="submit"
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
+            <div className="form-group">
+              <label className="form-label">Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="form-file-input"
+              />
+              {imagePreview && (
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
+                  className="image-preview"
+                />
+              )}
+            </div>
+
+            <div className="form-buttons">
+              <button type="submit" className="btn btn-submit">
                 Create Pin
               </button>
-              <button
-                type="button"
-                onClick={handleCancelForm}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  backgroundColor: '#666',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
+              <button type="button" onClick={handleCancelForm} className="btn btn-cancel">
                 Cancel
               </button>
             </div>

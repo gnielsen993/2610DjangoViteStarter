@@ -17,15 +17,20 @@ def get_pins(request):
 @csrf_exempt
 def add_pin(request):
     if request.method == 'POST':
+        if request.file:
+            image = request.FILES.get('image')
+        else:
+            image = None
         data = json.loads(request.body)
         pin = Pin.objects.create(
             user=request.user,
-            title=data['title'],
-            description=data['description'],
-            latitude=data['latitude'],
-            longitude=data['longitude'],
-            image=data.get('image', None)
+            title=data.get('title'),
+            description=data.get('description'),
+            latitude=data.get('latitude'),
+            longitude=data.get('longitude'),
+            image=image
         )
+        
         return JsonResponse({
             'id': pin.id,
             'title': pin.title,
