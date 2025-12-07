@@ -1,8 +1,9 @@
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
 import L from 'leaflet';
+import Sidebar from './Sidebar';
 
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
@@ -34,6 +35,7 @@ function MapClickHandler({ onMapClick }) {
 
 function PinMap() {
   const [pins, setPins] = useState([]);
+  const [filteredPins, setFilteredPins] = useState([]);
   const [center] = useState([41.7370, -111.8338]);
   const [showForm, setShowForm] = useState(false);
   const [newPinLocation, setNewPinLocation] = useState(null);
@@ -45,10 +47,15 @@ function PinMap() {
     status: 'wishlisted'
   });
   const [imagePreview, setImagePreview] = useState(null);
+  const mapRef = useRef();
 
   useEffect(() => {
     loadPins();
   }, []);
+
+  useEffect(() => {
+    setFilteredPins(pins);
+  }, [pins]);
 
   const loadPins = async () => {
     try {
@@ -67,6 +74,20 @@ function PinMap() {
   const handleMapClick = (latlng) => {
     setNewPinLocation(latlng);
     setShowForm(true);
+  };
+
+  const handlePinClick = (pin) => {
+    if (mapRef.current) {
+      mapRef.current.setView([pin.latitude, pin.longitude], 15);
+    }
+  };
+
+  const handleFilterChange = (filter) => {
+    if (filter === 'all') {
+      setFilteredPins(pins);
+    } else {
+      setFilteredPins(pins.filter(pin => pin.status === filter));
+    }
   };
 
   const handleImageChange = (e) => {
@@ -144,16 +165,26 @@ function PinMap() {
 
   const getStatusLabel = (status) => {
     const labels = {
-      wishlisted: 'Wishlisted',
-      visited: 'Visited',
-      favorite: 'Favorite'
+      wishlisted: '⭐ Wishlisted',
+      visited: '✓ Visited',
+      favorite: '❤️ Favorite'
     };
     return labels[status];
   };
 
   return (
     <div className="map-container">
-      <MapContainer center={center} zoom={13}>
+      <Sidebar 
+        pins={pins} 
+        onPinClick={handlePinClick}
+        onFilterChange={handleFilterChange}
+      />
+
+      <MapContainer 
+        center={center} 
+        zoom={13}
+        ref={mapRef}
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -161,7 +192,7 @@ function PinMap() {
         
         <MapClickHandler onMapClick={handleMapClick} />
         
-        {pins.map((pin) => (
+        {filteredPins.map((pin) => (
           <Marker 
             key={pin.id} 
             position={[pin.latitude, pin.longitude]}
