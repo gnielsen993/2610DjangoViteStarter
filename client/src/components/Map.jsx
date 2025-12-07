@@ -165,7 +165,8 @@ function PinMap() {
           borderRadius: '8px',
           boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
           zIndex: 1000,
-          minWidth: '300px'
+          minWidth: '300px',
+          color: '#333'
         }}>
           <h2 style={{ marginTop: 0 }}>Create New Pin</h2>
           <form onSubmit={handleFormSubmit}>
