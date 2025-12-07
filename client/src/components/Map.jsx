@@ -59,7 +59,7 @@ function PinMap() {
     e.preventDefault();
     
     try {
-      const response = await fetch('/api/pins/create/', {
+      const response = await fetch('/api/pins/add/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
