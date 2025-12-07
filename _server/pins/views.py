@@ -17,20 +17,28 @@ def get_pins(request):
 @csrf_exempt
 def add_pin(request):
     if request.method == 'POST':
-        if request.FILES:
-            image = request.FILES.get('image')
-        else:
-            image = None
-        data = json.loads(request.body)
-        pin = Pin.objects.create(
-            user=request.user,
-            title=data.get('title'),
-            description=data.get('description'),
-            latitude=data.get('latitude'),
-            longitude=data.get('longitude'),
-            image=image
-        )
+     
+        if request.content_type and 'multipart/form-data' in request.content_type:
 
+            image = request.FILES.get('image') if 'image' in request.FILES else None
+            pin = Pin.objects.create(
+                user=request.user,
+                title=request.POST.get('title'),
+                description=request.POST.get('description', ''),
+                latitude=float(request.POST.get('latitude')),
+                longitude=float(request.POST.get('longitude')),
+                image=image
+            )
+        else:
+            data = json.loads(request.body)
+            pin = Pin.objects.create(
+                user=request.user,
+                title=data.get('title'),
+                description=data.get('description'),
+                latitude=data.get('latitude'),
+                longitude=data.get('longitude'),
+            )
+        
         return JsonResponse({
             'id': pin.id,
             'title': pin.title,
@@ -38,8 +46,7 @@ def add_pin(request):
             'latitude': pin.latitude,
             'longitude': pin.longitude,
             'image': pin.image.url if pin.image else None,
-            'created_at': pin.created_at,
-            'updated_at': pin.updated_at
+            'created_at': pin.created_at.isoformat(),
         })
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
