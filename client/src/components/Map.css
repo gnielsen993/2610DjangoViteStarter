@@ -131,3 +131,80 @@
 .btn-cancel:hover {
   background-color: #555;
 }
+
+.form-checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-checkbox {
+  margin-right: 8px;
+  width: auto;
+  cursor: pointer;
+}
+
+.form-radio-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.radio-option label {
+  cursor: pointer;
+  margin: 0;
+}
+
+.pin-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.status-wishlisted {
+  background-color: #ff9800;
+  color: white;
+}
+
+.status-visited {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-favorite {
+  background-color: #e91e63;
+  color: white;
+}
+
+.privacy-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.privacy-public {
+  background-color: #2196F3;
+  color: white;
+}
+
+.privacy-private {
+  background-color: #666;
+  color: white;
+}

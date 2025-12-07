@@ -8,9 +8,20 @@ import json
 
 @login_required
 def get_pins(request):
-    pins = Pin.objects.filter(user = request.user).values(
-        'id', 'title', 'description', 'latitude', 'longitude', 'image', 'created_at', 'updated_at'
-    )
+    pins = Pin.objects.filter(user = request.user)
+    pin_data = []
+    for pin in pins:
+        pin_data.append({
+            'id': pin.id,
+            'title': pin.title,
+            'description': pin.description,
+            'latitude': pin.latitude,
+            'longitude': pin.longitude,
+            'image':  pin.image.url if pin.image else None,
+            'created_at': pin.created_at.isoformat(),
+            "status": pin.status,
+            "is_public": pin.is_public,
+        })
     return JsonResponse(list(pins), safe=False)
 
 @login_required
@@ -27,7 +38,9 @@ def add_pin(request):
                 description=request.POST.get('description', ''),
                 latitude=float(request.POST.get('latitude')),
                 longitude=float(request.POST.get('longitude')),
-                image=image
+                image=image,
+                is_public=request.POST.get('is_public', 'true').lower() == 'true',
+                status=request.POST.get('status', 'wishlisted'),
             )
         else:
             data = json.loads(request.body)
@@ -37,6 +50,8 @@ def add_pin(request):
                 description=data.get('description'),
                 latitude=data.get('latitude'),
                 longitude=data.get('longitude'),
+                is_public=data.get('is_public', True),
+                status=data.get('status', 'wishlisted'),
             )
         
         return JsonResponse({
@@ -47,6 +62,8 @@ def add_pin(request):
             'longitude': pin.longitude,
             'image': pin.image.url if pin.image else None,
             'created_at': pin.created_at.isoformat(),
+            "status": pin.status,
+            "is_public": pin.is_public,
         })
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 

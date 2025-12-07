@@ -4,17 +4,24 @@ import 'leaflet/dist/leaflet.css';
 import './Map.css';
 import L from 'leaflet';
 
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-});
+const createCustomIcon = (color) => {
+  return L.icon({
+    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+};
 
-L.Marker.prototype.options.icon = DefaultIcon;
+const icons = {
+  wishlisted: createCustomIcon('orange'),
+  visited: createCustomIcon('green'),
+  favorite: createCustomIcon('red'),
+};
 
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
@@ -27,10 +34,16 @@ function MapClickHandler({ onMapClick }) {
 
 function PinMap() {
   const [pins, setPins] = useState([]);
-  const [center] = useState([41.7370, -111.8338]); 
+  const [center] = useState([41.7370, -111.8338]);
   const [showForm, setShowForm] = useState(false);
   const [newPinLocation, setNewPinLocation] = useState(null);
-  const [formData, setFormData] = useState({ title: '', description: '', image: null });
+  const [formData, setFormData] = useState({ 
+    title: '', 
+    description: '', 
+    image: null,
+    is_public: true,
+    status: 'wishlisted'
+  });
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
@@ -52,7 +65,6 @@ function PinMap() {
   };
 
   const handleMapClick = (latlng) => {
-    console.log('Map clicked at:', latlng);
     setNewPinLocation(latlng);
     setShowForm(true);
   };
@@ -61,7 +73,6 @@ function PinMap() {
     const file = e.target.files[0];
     if (file) {
       setFormData({ ...formData, image: file });
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -79,6 +90,8 @@ function PinMap() {
       formDataToSend.append('description', formData.description);
       formDataToSend.append('latitude', newPinLocation.lat);
       formDataToSend.append('longitude', newPinLocation.lng);
+      formDataToSend.append('is_public', formData.is_public);
+      formDataToSend.append('status', formData.status);
       
       if (formData.image) {
         formDataToSend.append('image', formData.image);
@@ -94,11 +107,9 @@ function PinMap() {
         const newPin = await response.json();
         setPins([...pins, newPin]);
         setShowForm(false);
-        setFormData({ title: '', description: '', image: null });
+        setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted' });
         setImagePreview(null);
         setNewPinLocation(null);
-      } else {
-        console.error('Error creating pin');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -118,8 +129,6 @@ function PinMap() {
 
       if (response.ok) {
         setPins(pins.filter(pin => pin.id !== pinId));
-      } else {
-        console.error('Error deleting pin');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -128,9 +137,18 @@ function PinMap() {
 
   const handleCancelForm = () => {
     setShowForm(false);
-    setFormData({ title: '', description: '', image: null });
+    setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted' });
     setImagePreview(null);
     setNewPinLocation(null);
+  };
+
+  const getStatusLabel = (status) => {
+    const labels = {
+      wishlisted: 'Wishlisted',
+      visited: 'Visited',
+      favorite: 'Favorite'
+    };
+    return labels[status];
   };
 
   return (
@@ -144,10 +162,22 @@ function PinMap() {
         <MapClickHandler onMapClick={handleMapClick} />
         
         {pins.map((pin) => (
-          <Marker key={pin.id} position={[pin.latitude, pin.longitude]}>
+          <Marker 
+            key={pin.id} 
+            position={[pin.latitude, pin.longitude]}
+            icon={icons[pin.status]}
+          >
             <Popup maxWidth={300}>
               <div className="pin-popup">
                 <strong className="pin-popup-title">{pin.title}</strong>
+                <div>
+                  <span className={`pin-status-badge status-${pin.status}`}>
+                    {getStatusLabel(pin.status)}
+                  </span>
+                  <span className={`privacy-badge privacy-${pin.is_public ? 'public' : 'private'}`}>
+                    {pin.is_public ? '🌍 Public' : '🔒 Private'}
+                  </span>
+                </div>
                 {pin.description && <p className="pin-popup-description">{pin.description}</p>}
                 {pin.image && (
                   <img 
@@ -191,6 +221,58 @@ function PinMap() {
                 rows="3"
                 className="form-textarea"
               />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Status</label>
+              <div className="form-radio-group">
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="wishlisted"
+                    name="status"
+                    value="wishlisted"
+                    checked={formData.status === 'wishlisted'}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  />
+                  <label htmlFor="wishlisted">⭐ Wishlisted</label>
+                </div>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="visited"
+                    name="status"
+                    value="visited"
+                    checked={formData.status === 'visited'}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  />
+                  <label htmlFor="visited">✓ Visited</label>
+                </div>
+                <div className="radio-option">
+                  <input
+                    type="radio"
+                    id="favorite"
+                    name="status"
+                    value="favorite"
+                    checked={formData.status === 'favorite'}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  />
+                  <label htmlFor="favorite">❤️ Favorite</label>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-checkbox-group">
+              <input
+                type="checkbox"
+                id="is_public"
+                checked={formData.is_public}
+                onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
+                className="form-checkbox"
+              />
+              <label htmlFor="is_public" className="form-label" style={{ marginBottom: 0 }}>
+                🌍 Make this pin public
+              </label>
             </div>
 
             <div className="form-group">
