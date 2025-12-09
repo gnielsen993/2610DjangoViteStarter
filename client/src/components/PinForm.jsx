@@ -27,6 +27,20 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
         </div>
 
         <div className="form-group">
+            <label className="form-label">Category</label>
+            <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="form-input"
+            >
+                <option value="hotel">Hotel</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="attraction">Attraction</option>
+                <option value="country">Country</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div className="form-group">
           <label className="form-label">Status</label>
           <div className="form-radio-group">
             <div className="radio-option">

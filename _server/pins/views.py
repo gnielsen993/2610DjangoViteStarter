@@ -21,6 +21,7 @@ def get_pins(request):
             'created_at': pin.created_at.isoformat(),
             "status": pin.status,
             "is_public": pin.is_public,
+            "category": pin.category,
         })
     return JsonResponse(pin_data, safe=False)
 
@@ -41,6 +42,7 @@ def add_pin(request):
                 image= image,
                 is_public=request.POST.get('is_public', 'true').lower() == 'true',
                 status=request.POST.get('status', 'wishlisted'),
+                category=request.POST.get('category', 'other'),
             )
         else:
             data = json.loads(request.body)
@@ -52,6 +54,7 @@ def add_pin(request):
                 longitude=data.get('longitude'),
                 is_public=data.get('is_public', True),
                 status=data.get('status', 'wishlisted'),
+                category=data.get('category', 'other'),
             )
         
         return JsonResponse({
@@ -64,6 +67,7 @@ def add_pin(request):
             'created_at': pin.created_at.isoformat(),
             "status": pin.status,
             "is_public": pin.is_public,
+            "category": pin.category,
         })
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 

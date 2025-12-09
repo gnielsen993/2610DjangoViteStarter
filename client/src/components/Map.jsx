@@ -45,7 +45,8 @@ function PinMap() {
     description: '', 
     image: null,
     is_public: true,
-    status: 'wishlisted'
+    status: 'wishlisted',
+    category: 'other',
   });
   const [imagePreview, setImagePreview] = useState(null);
   const mapRef = useRef();
@@ -114,6 +115,7 @@ function PinMap() {
       formDataToSend.append('longitude', newPinLocation.lng);
       formDataToSend.append('is_public', formData.is_public);
       formDataToSend.append('status', formData.status);
+      formDataToSend.append('category', formData.category);
       
       if (formData.image) {
         formDataToSend.append('image', formData.image);
@@ -129,7 +131,7 @@ function PinMap() {
         const newPin = await response.json();
         setPins([...pins, newPin]);
         setShowForm(false);
-        setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted' });
+        setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
         setImagePreview(null);
         setNewPinLocation(null);
       }
@@ -159,7 +161,7 @@ function PinMap() {
 
   const handleCancelForm = () => {
     setShowForm(false);
-    setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted' });
+    setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
     setImagePreview(null);
     setNewPinLocation(null);
   };
