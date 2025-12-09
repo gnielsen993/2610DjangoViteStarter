@@ -71,7 +71,11 @@ function Home({ isAuthenticated, onNavigateToMap }) {
     <div className="home-container">
       <header className="home-header">
         <h1 className="home-title">Pin Traveler</h1>
-        <div className="home-nav">
+      </header>
+
+      <div className="home-content">
+        <div className="home-sidebar">
+                    <div className="home-nav">
             {isAuthenticated ? (
                 <>
                     <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
@@ -81,10 +85,6 @@ function Home({ isAuthenticated, onNavigateToMap }) {
                 <a href="/registration/sign_in/" className="nav-btn">Login</a>
             )}
         </div>
-      </header>
-
-      <div className="home-content">
-        <div className="home-sidebar">
           <h2>Categories</h2>
           <button 
             className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
