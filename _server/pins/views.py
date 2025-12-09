@@ -22,7 +22,7 @@ def get_pins(request):
             "status": pin.status,
             "is_public": pin.is_public,
         })
-    return JsonResponse(list(pins), safe=False)
+    return JsonResponse(pin_data, safe=False)
 
 @login_required
 @csrf_exempt
