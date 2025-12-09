@@ -51,6 +51,7 @@ h2 {
   text-align: center;
   min-width: 200px;
   flex: 1;
+  color:#333
 }
 
 .stat-card.total {
@@ -66,7 +67,7 @@ h2 {
 }
 
 .stat-card.total h2 {
-  color: white;
+  color: #333;
 }
 
 .stat-number {
@@ -77,5 +78,5 @@ h2 {
 }
 
 .stat-card.total .stat-number {
-  color: white;
+  color: #333;
 }
