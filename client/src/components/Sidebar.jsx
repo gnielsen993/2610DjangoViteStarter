@@ -109,7 +109,7 @@ function Sidebar({ pins, onPinClick, onFilterChange }) {
                 )}
                 <div className="pin-item-footer">
                   <span className={`privacy-indicator ${pin.is_public ? 'public' : 'private'}`}>
-                    {pin.is_public ? '🌍' : '🔒'}
+                    {pin.is_public ? 'Public' : 'Private'}
                   </span>
                   <span className="pin-date">
                     {new Date(pin.created_at).toLocaleDateString()}
