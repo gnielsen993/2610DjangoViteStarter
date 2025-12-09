@@ -110,3 +110,21 @@ def stats(request):
         'other_pins': other_pins,
     }
     return JsonResponse(data)
+
+def get_public_pins(request):
+    pins = Pin.objects.filter(is_public=True)
+    pin_data = []
+    for pin in pins:
+        pin_data.append({
+            'id': pin.id,
+            'title': pin.title,
+            'description': pin.description,
+            'latitude': pin.latitude,
+            'longitude': pin.longitude,
+            'image':  pin.image.url if pin.image else None,
+            'created_at': pin.created_at.isoformat(),
+            "status": pin.status,
+            "is_public": pin.is_public,
+            "category": pin.category,
+        })
+    return JsonResponse(pin_data, safe=False)
