@@ -17,16 +17,6 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
         </div>
         
         <div className="form-group">
-          <label className="form-label">Description</label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            rows="3"
-            className="form-textarea"
-          />
-        </div>
-
-        <div className="form-group">
             <label className="form-label">Category</label>
             <select
                 value={formData.category}
@@ -40,6 +30,17 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
                 <option value="other">Other</option>
             </select>
         </div>
+        
+        <div className="form-group">
+          <label className="form-label">Highlights</label>
+          <textarea
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            rows="3"
+            className="form-textarea"
+          />
+        </div>
+
         <div className="form-group">
           <label className="form-label">Status</label>
           <div className="form-radio-group">

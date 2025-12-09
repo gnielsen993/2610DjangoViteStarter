@@ -9,10 +9,10 @@ class Pin(models.Model):
     ]
 
     Category_CHOICES = [
-        ('restaurant', 'Restaurant'),
-        ('museum', 'Museum'),
-        ('park', 'Park'),
+        ('trip', 'Trip'),
         ('hotel', 'Hotel'),
+        ('restaurant', 'Restaurant'),
+        ('Attraction', 'Attraction'),
         ('other', 'Other'),
     ]
 
