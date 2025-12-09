@@ -38,7 +38,7 @@ def add_pin(request):
                 description=request.POST.get('description', ''),
                 latitude=float(request.POST.get('latitude')),
                 longitude=float(request.POST.get('longitude')),
-                image=image,
+                image=request.build_absolute_uri(image) if image else None,
                 is_public=request.POST.get('is_public', 'true').lower() == 'true',
                 status=request.POST.get('status', 'wishlisted'),
             )
