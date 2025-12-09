@@ -24,7 +24,7 @@ h2 {
 
 .close-stats-btn {
   background-color: #667eea;
-  color: white;
+  color: #333;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -55,7 +55,7 @@ h2 {
 
 .stat-card.total {
   background-color: #667eea;
-  color: white;
+  color: #333;
   border: none;
 }
 
