@@ -54,9 +54,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG:
-    MIDDLEWARE.append("core.middleware.asset_proxy_middleware")
-
 ROOT_URLCONF = '_server.urls'
 
 TEMPLATES = [
