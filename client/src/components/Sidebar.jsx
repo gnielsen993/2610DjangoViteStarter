@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Sidebar.css';
 
-function Sidebar({ pins, onPinClick, onFilterChange }) {
+function Sidebar({ pins, onPinClick, onFilterChange, onStatsClick }) {
   const [isOpen, setIsOpen] = useState(true);
   const [activeStatusFilter, setActiveStatusFilter] = useState('all');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('all');
@@ -54,7 +54,9 @@ function Sidebar({ pins, onPinClick, onFilterChange }) {
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h2>My Pins</h2>
-          <span className="pin-count">{counts.all} total</span>
+          <button className="stats-button" onClick={onStatsClick}>
+            View Stats
+          </button>
         </div>
 
         <div className="search-box">

@@ -6,6 +6,7 @@ import L from 'leaflet';
 import Sidebar from './Sidebar';
 import PinForm from './PinForm';
 import PinPopup from './PinPopup';
+import Stats from './Stats';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 const createCustomIcon = (color) => {
@@ -39,6 +40,7 @@ function PinMap() {
   const [filteredPins, setFilteredPins] = useState([]);
   const [center] = useState([41.7370, -111.8338]);
   const [showForm, setShowForm] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [newPinLocation, setNewPinLocation] = useState(null);
   const [formData, setFormData] = useState({ 
     title: '', 
@@ -96,6 +98,14 @@ function PinMap() {
     }
     
     setFilteredPins(filtered);
+  };
+
+  const handleStatsClick = () => {
+    setShowStats(true);
+  };
+
+  const handleCloseStats = () => {
+    setShowStats(false);
   };
 
   const handleImageChange = (e) => {
@@ -172,12 +182,17 @@ function PinMap() {
     setNewPinLocation(null);
   };
 
+  if (showStats) {
+    return <Stats onClose={handleCloseStats} />;
+  }
+
   return (
     <div className="map-container">
       <Sidebar 
         pins={pins} 
         onPinClick={handlePinClick}
         onFilterChange={handleFilterChange}
+        onStatsClick={handleStatsClick}
       />
 
       <MapContainer 

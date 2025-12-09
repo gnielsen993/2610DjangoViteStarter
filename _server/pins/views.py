@@ -82,3 +82,31 @@ def delete_pin(request, pin_id):
         except Pin.DoesNotExist:
             return JsonResponse({'error': 'Pin not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@login_required
+def stats(request):
+    pins = Pin.objects.filter(user=request.user)
+    total_pins = pins.count()
+    wishlisted_pins = pins.filter(status='wishlisted').count()
+    visited_pins = pins.filter(status='visited').count()
+    favorite_pins = pins.filter(status='favorite').count()
+
+    trip_pins = pins.filter(category='trip').count()
+    hotel_pins = pins.filter(category='hotel').count()
+    restaurant_pins = pins.filter(category='restaurant').count()
+    attraction_pins = pins.filter(category='attraction').count()
+    other_pins = pins.filter(category='other').count()
+
+    data = {
+        'total_pins': total_pins,
+        'wishlisted_pins': wishlisted_pins,
+        'visited_pins': visited_pins,
+        'favorite_pins': favorite_pins,
+        'trip_pins': trip_pins,
+        'hotel_pins': hotel_pins,
+        'restaurant_pins': restaurant_pins,
+        'attraction_pins': attraction_pins,
+        'other_pins': other_pins,
+    }
+    return JsonResponse(data)

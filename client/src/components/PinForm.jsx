@@ -23,14 +23,14 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="form-input"
             >
+                <option value="trip">Trip</option>
                 <option value="hotel">Hotel</option>
                 <option value="restaurant">Restaurant</option>
                 <option value="attraction">Attraction</option>
-                <option value="country">Country</option>
                 <option value="other">Other</option>
             </select>
         </div>
-        
+
         <div className="form-group">
           <label className="form-label">Highlights</label>
           <textarea

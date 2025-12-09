@@ -10,7 +10,6 @@
 .pin-popup-image {
   width: 100%;
   max-height: 200px;
-  object-fit: cover;
   border-radius: 4px;
   margin-bottom: 8px;
 }
@@ -35,23 +34,20 @@
   padding: 2px 8px;
   border-radius: 3px;
   font-size: 12px;
-  font-weight: bold;
   margin-bottom: 5px;
+  color: white;
 }
 
 .status-wishlisted {
   background-color: #ff9800;
-  color: white;
 }
 
 .status-visited {
   background-color: #4CAF50;
-  color: white;
 }
 
 .status-favorite {
   background-color: #e91e63;
-  color: white;
 }
 
 .privacy-badge {
@@ -60,16 +56,15 @@
   border-radius: 3px;
   font-size: 12px;
   margin-left: 5px;
+  color: white;
 }
 
 .privacy-public {
   background-color: #2196F3;
-  color: white;
 }
 
 .privacy-private {
   background-color: #666;
-  color: white;
 }
 
 .pin-category {
