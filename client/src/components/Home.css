@@ -22,17 +22,19 @@
 .home-nav {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .nav-btn {
   background-color: white;
   color: #2196F3;
   border: none;
-  padding-right: 100px;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .nav-btn:hover {

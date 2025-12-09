@@ -72,14 +72,14 @@ function Home({ isAuthenticated, onNavigateToMap }) {
       <header className="home-header">
         <h1 className="home-title">Pin Traveler</h1>
         <div className="home-nav">
-          {isAuthenticated ? (
-            <>
-              <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
-              <a href="/registration/logout/" className="nav-btn logout-btn">Logout</a>
-            </>
-          ) : (
-            <a href="/registration/sign_in/" className="nav-btn">Login</a>
-          )}
+            {isAuthenticated ? (
+                <>
+                    <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
+                    <a href="/registration/logout/" className="nav-btn logout-btn">Logout</a>
+                </>
+            ) : (
+                <a href="/registration/sign_in/" className="nav-btn">Login</a>
+            )}
         </div>
       </header>
 
