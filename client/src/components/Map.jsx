@@ -5,7 +5,7 @@ import './Map.css';
 import L from 'leaflet';
 import Sidebar from './Sidebar';
 import PinForm from './PinForm';
-
+import PinPopup from './PinPopup';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 const createCustomIcon = (color) => {
@@ -84,12 +84,18 @@ function PinMap() {
     }
   };
 
-  const handleFilterChange = (filter) => {
-    if (filter === 'all') {
-      setFilteredPins(pins);
-    } else {
-      setFilteredPins(pins.filter(pin => pin.status === filter));
+  const handleFilterChange = (filters) => {
+    let filtered = pins;
+    
+    if (filters.status !== 'all') {
+      filtered = filtered.filter(pin => pin.status === filters.status);
     }
+    
+    if (filters.category !== 'all') {
+      filtered = filtered.filter(pin => pin.category === filters.category);
+    }
+    
+    setFilteredPins(filtered);
   };
 
   const handleImageChange = (e) => {
@@ -166,15 +172,6 @@ function PinMap() {
     setNewPinLocation(null);
   };
 
-  const getStatusLabel = (status) => {
-    const labels = {
-      wishlisted: 'Wishlisted',
-      visited: 'Visited',
-      favorite: 'Favorite'
-    };
-    return labels[status];
-  };
-
   return (
     <div className="map-container">
       <Sidebar 
@@ -202,31 +199,7 @@ function PinMap() {
             icon={icons[pin.status]}
           >
             <Popup maxWidth={300}>
-              <div className="pin-popup">
-                <strong className="pin-popup-title">{pin.title}</strong>
-                <div>
-                  <span className={`pin-status-badge status-${pin.status}`}>
-                    {getStatusLabel(pin.status)}
-                  </span>
-                  <span className={`privacy-badge privacy-${pin.is_public ? 'public' : 'private'}`}>
-                    {pin.is_public ? 'Public' : 'Private'}
-                  </span>
-                </div>
-                {pin.description && <p className="pin-popup-description">{pin.description}</p>}
-                {pin.image && (
-                  <img 
-                    src={pin.image} 
-                    alt={pin.title}
-                    className="pin-popup-image"
-                  />
-                )}
-                <button 
-                  onClick={() => handleDeletePin(pin.id)}
-                  className="pin-delete-btn"
-                >
-                  Delete
-                </button>
-              </div>
+              <PinPopup pin={pin} onDelete={handleDeletePin} />
             </Popup>
           </Marker>
         ))}

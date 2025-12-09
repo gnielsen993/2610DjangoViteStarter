@@ -3,16 +3,22 @@ import './Sidebar.css';
 
 function Sidebar({ pins, onPinClick, onFilterChange }) {
   const [isOpen, setIsOpen] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeStatusFilter, setActiveStatusFilter] = useState('all');
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter);
-    onFilterChange(filter);
+  const handleStatusFilterChange = (filter) => {
+    setActiveStatusFilter(filter);
+    onFilterChange({ status: filter, category: activeCategoryFilter });
+  };
+
+  const handleCategoryFilterChange = (filter) => {
+    setActiveCategoryFilter(filter);
+    onFilterChange({ status: activeStatusFilter, category: filter });
   };
 
   const getCounts = () => {
@@ -21,14 +27,20 @@ function Sidebar({ pins, onPinClick, onFilterChange }) {
       wishlisted: pins.filter(p => p.status === 'wishlisted').length,
       visited: pins.filter(p => p.status === 'visited').length,
       favorite: pins.filter(p => p.status === 'favorite').length,
+      trip: pins.filter(p => p.category === 'trip').length,
+      hotel: pins.filter(p => p.category === 'hotel').length,
+      restaurant: pins.filter(p => p.category === 'restaurant').length,
+      attraction: pins.filter(p => p.category === 'attraction').length,
+      other: pins.filter(p => p.category === 'other').length,
     };
   };
 
   const filteredPins = pins.filter(pin => {
-    const matchesFilter = activeFilter === 'all' || pin.status === activeFilter;
+    const matchesStatusFilter = activeStatusFilter === 'all' || pin.status === activeStatusFilter;
+    const matchesCategoryFilter = activeCategoryFilter === 'all' || pin.category === activeCategoryFilter;
     const matchesSearch = pin.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          pin.description.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
+    return matchesStatusFilter && matchesCategoryFilter && matchesSearch;
   });
 
   const counts = getCounts();
@@ -55,31 +67,76 @@ function Sidebar({ pins, onPinClick, onFilterChange }) {
           />
         </div>
 
-        <div className="filter-tabs">
-          <button
-            className={`filter-tab ${activeFilter === 'all' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('all')}
-          >
-            All ({counts.all})
-          </button>
-          <button
-            className={`filter-tab wishlisted ${activeFilter === 'wishlisted' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('wishlisted')}
-          >
-            Wishlist {counts.wishlisted}
-          </button>
-          <button
-            className={`filter-tab visited ${activeFilter === 'visited' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('visited')}
-          >
-            Visited {counts.visited}
-          </button>
-          <button
-            className={`filter-tab favorite ${activeFilter === 'favorite' ? 'active' : ''}`}
-            onClick={() => handleFilterChange('favorite')}
-          >
-            Favorites {counts.favorite}
-          </button>
+        <div className="filter-section">
+          <h3 className="filter-section-title">Status</h3>
+          <div className="filter-tabs">
+            <button
+              className={`filter-tab ${activeStatusFilter === 'all' ? 'active' : ''}`}
+              onClick={() => handleStatusFilterChange('all')}
+            >
+              All ({counts.all})
+            </button>
+            <button
+              className={`filter-tab wishlisted ${activeStatusFilter === 'wishlisted' ? 'active' : ''}`}
+              onClick={() => handleStatusFilterChange('wishlisted')}
+            >
+              Wishlist {counts.wishlisted}
+            </button>
+            <button
+              className={`filter-tab visited ${activeStatusFilter === 'visited' ? 'active' : ''}`}
+              onClick={() => handleStatusFilterChange('visited')}
+            >
+              Visited {counts.visited}
+            </button>
+            <button
+              className={`filter-tab favorite ${activeStatusFilter === 'favorite' ? 'active' : ''}`}
+              onClick={() => handleStatusFilterChange('favorite')}
+            >
+              Favorites {counts.favorite}
+            </button>
+          </div>
+        </div>
+
+        <div className="filter-section">
+          <h3 className="filter-section-title">Category</h3>
+          <div className="filter-tabs">
+            <button
+              className={`filter-tab ${activeCategoryFilter === 'all' ? 'active' : ''}`}
+              onClick={() => handleCategoryFilterChange('all')}
+            >
+              All ({counts.all})
+            </button>
+            <button
+              className={`filter-tab ${activeCategoryFilter === 'trip' ? 'active' : ''}`}
+              onClick={() => handleCategoryFilterChange('trip')}
+            >
+              Trip {counts.trip}
+            </button>
+            <button
+              className={`filter-tab ${activeCategoryFilter === 'hotel' ? 'active' : ''}`}
+              onClick={() => handleCategoryFilterChange('hotel')}
+            >
+              Hotel {counts.hotel}
+            </button>
+            <button
+              className={`filter-tab ${activeCategoryFilter === 'restaurant' ? 'active' : ''}`}
+              onClick={() => handleCategoryFilterChange('restaurant')}
+            >
+              Restaurant {counts.restaurant}
+            </button>
+            <button
+              className={`filter-tab ${activeCategoryFilter === 'attraction' ? 'active' : ''}`}
+              onClick={() => handleCategoryFilterChange('attraction')}
+            >
+              Attraction {counts.attraction}
+            </button>
+            <button
+              className={`filter-tab ${activeCategoryFilter === 'other' ? 'active' : ''}`}
+              onClick={() => handleCategoryFilterChange('other')}
+            >
+              Other {counts.other}
+            </button>
+          </div>
         </div>
 
         <div className="pins-list">

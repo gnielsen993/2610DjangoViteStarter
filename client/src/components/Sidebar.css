@@ -202,3 +202,15 @@
 .pin-date {
   font-size: 11px;
 }
+
+.filter-section {
+  margin-bottom: 15px;
+}
+
+.filter-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 10px 0 8px 0;
+  padding: 0 10px;
+}
