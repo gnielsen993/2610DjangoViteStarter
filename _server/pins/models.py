@@ -8,6 +8,14 @@ class Pin(models.Model):
         ('favorite', 'Favorite'),
     ]
 
+    Category_CHOICES = [
+        ('restaurant', 'Restaurant'),
+        ('museum', 'Museum'),
+        ('park', 'Park'),
+        ('hotel', 'Hotel'),
+        ('other', 'Other'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -18,6 +26,7 @@ class Pin(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_public = models.BooleanField(default=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='wishlisted')
+    category = models.CharField(max_length=20, choices=Category_CHOICES, default='other')
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
