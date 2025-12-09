@@ -1,9 +1,9 @@
 import './PinForm.css';
 
-function PinForm({ formData, setFormData, imagePreview, handleImageChange, handleFormSubmit, handleCancelForm }) {
+function PinForm({ formData, setFormData, imagePreview, handleImageChange, handleFormSubmit, handleCancelForm, editingPin }) {
   return (
     <div className="pin-form-overlay">
-      <h2 className="pin-form-title">Create New Pin</h2>
+      <h2 className="pin-form-title">{editingPin ? 'Edit Pin' : 'Create New Pin'}</h2>
       <form onSubmit={handleFormSubmit}>
         <div className="form-group">
           <label className="form-label">Title *</label>
@@ -17,28 +17,28 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
         </div>
         
         <div className="form-group">
-            <label className="form-label">Category</label>
-            <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="form-input"
-            >
-                <option value="trip">Trip</option>
-                <option value="hotel">Hotel</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="attraction">Attraction</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Highlights</label>
+          <label className="form-label">Description</label>
           <textarea
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows="3"
             className="form-textarea"
           />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Category</label>
+          <select
+            value={formData.category}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            className="form-input"
+          >
+            <option value="trip">Trip</option>
+            <option value="hotel">Hotel</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="attraction">Attraction</option>
+            <option value="other">Other</option>
+          </select>
         </div>
 
         <div className="form-group">
@@ -112,7 +112,7 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
 
         <div className="form-buttons">
           <button type="submit" className="btn btn-submit">
-            Create Pin
+            {editingPin ? 'Update Pin' : 'Create Pin'}
           </button>
           <button type="button" onClick={handleCancelForm} className="btn btn-cancel">
             Cancel

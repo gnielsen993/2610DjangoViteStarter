@@ -1,6 +1,6 @@
 import './PinPopup.css';
 
-function PinPopup({ pin, onDelete }) {
+function PinPopup({ pin, onDelete, onEdit }) {
   const getStatusLabel = (status) => {
     const labels = {
       wishlisted: 'Wishlisted',
@@ -45,12 +45,20 @@ function PinPopup({ pin, onDelete }) {
           className="pin-popup-image"
         />
       )}
-      <button 
-        onClick={() => onDelete(pin.id)}
-        className="pin-delete-btn"
-      >
-        Delete
-      </button>
+      <div style={{ display: 'flex', gap: '5px' }}>
+        <button 
+          onClick={() => onEdit(pin)}
+          className="pin-edit-btn"
+        >
+          Edit
+        </button>
+        <button 
+          onClick={() => onDelete(pin.id)}
+          className="pin-delete-btn"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 }

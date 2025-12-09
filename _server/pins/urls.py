@@ -7,4 +7,5 @@ urlpatterns = [
     path('pins/<int:pin_id>/delete/', views.delete_pin, name='delete_pin'),
     path('pins/stats/', views.stats, name='stats'),
     path('pins/public/', views.get_public_pins, name='get_public_pins'),
+    path('pins/<int:pin_id>/update/', views.update_pin, name='update_pin'),
 ]

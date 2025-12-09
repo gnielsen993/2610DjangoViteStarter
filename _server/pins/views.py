@@ -128,3 +128,36 @@ def get_public_pins(request):
             "category": pin.category,
         })
     return JsonResponse(pin_data, safe=False)
+
+@login_required
+@csrf_exempt
+def update_pin(request, pin_id):
+    if request.method == 'PUT':
+        try:
+            pin = Pin.objects.get(id=pin_id, user=request.user)
+            data = json.loads(request.body)
+
+            pin.title = data.get('title', pin.title)
+            pin.description = data.get('description', pin.description)
+            pin.latitude = data.get('latitude', pin.latitude)
+            pin.longitude = data.get('longitude', pin.longitude)
+            pin.is_public = data.get('is_public', pin.is_public)
+            pin.status = data.get('status', pin.status)
+            pin.category = data.get('category', pin.category)
+            pin.save()
+
+            return JsonResponse({
+                'id': pin.id,
+                'title': pin.title,
+                'description': pin.description,
+                'latitude': pin.latitude,
+                'longitude': pin.longitude,
+                'image': pin.image.url if pin.image else None,
+                'created_at': pin.created_at.isoformat(),
+                "status": pin.status,
+                "is_public": pin.is_public,
+                "category": pin.category,
+            })
+        except Pin.DoesNotExist:
+            return JsonResponse({'error': 'Pin not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

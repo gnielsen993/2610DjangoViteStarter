@@ -42,6 +42,7 @@ function PinMap() {
   const [showForm, setShowForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [newPinLocation, setNewPinLocation] = useState(null);
+  const [editingPin, setEditingPin] = useState(null);
   const [formData, setFormData] = useState({ 
     title: '', 
     description: '', 
@@ -108,6 +109,20 @@ function PinMap() {
     setShowStats(false);
   };
 
+  const handleEditPin = (pin) => {
+    setEditingPin(pin);
+    setFormData({
+      title: pin.title,
+      description: pin.description,
+      image: null,
+      is_public: pin.is_public,
+      status: pin.status,
+      category: pin.category,
+    });
+    setImagePreview(pin.image);
+    setShowForm(true);
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -127,29 +142,51 @@ function PinMap() {
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
       formDataToSend.append('description', formData.description);
-      formDataToSend.append('latitude', newPinLocation.lat);
-      formDataToSend.append('longitude', newPinLocation.lng);
       formDataToSend.append('is_public', formData.is_public);
       formDataToSend.append('status', formData.status);
       formDataToSend.append('category', formData.category);
       
-      if (formData.image) {
-        formDataToSend.append('image', formData.image);
-      }
+      if (editingPin) {
+        if (formData.image) {
+          formDataToSend.append('image', formData.image);
+        }
 
-      const response = await fetch('/api/pins/add/', {
-        method: 'POST',
-        credentials: 'same-origin',
-        body: formDataToSend,
-      });
+        const response = await fetch(`/api/pins/${editingPin.id}/update/`, {
+          method: 'PUT',
+          credentials: 'same-origin',
+          body: formDataToSend,
+        });
 
-      if (response.ok) {
-        const newPin = await response.json();
-        setPins([...pins, newPin]);
-        setShowForm(false);
-        setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
-        setImagePreview(null);
-        setNewPinLocation(null);
+        if (response.ok) {
+          const updatedPin = await response.json();
+          setPins(pins.map(p => p.id === updatedPin.id ? updatedPin : p));
+          setShowForm(false);
+          setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
+          setImagePreview(null);
+          setEditingPin(null);
+        }
+      } else {
+        formDataToSend.append('latitude', newPinLocation.lat);
+        formDataToSend.append('longitude', newPinLocation.lng);
+        
+        if (formData.image) {
+          formDataToSend.append('image', formData.image);
+        }
+
+        const response = await fetch('/api/pins/add/', {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: formDataToSend,
+        });
+
+        if (response.ok) {
+          const newPin = await response.json();
+          setPins([...pins, newPin]);
+          setShowForm(false);
+          setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
+          setImagePreview(null);
+          setNewPinLocation(null);
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -180,6 +217,7 @@ function PinMap() {
     setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
     setImagePreview(null);
     setNewPinLocation(null);
+    setEditingPin(null);
   };
 
   if (showStats) {
@@ -214,7 +252,7 @@ function PinMap() {
             icon={icons[pin.status]}
           >
             <Popup maxWidth={300}>
-              <PinPopup pin={pin} onDelete={handleDeletePin} />
+              <PinPopup pin={pin} onDelete={handleDeletePin} onEdit={handleEditPin} />
             </Popup>
           </Marker>
         ))}
@@ -228,6 +266,7 @@ function PinMap() {
           handleImageChange={handleImageChange}
           handleFormSubmit={handleFormSubmit}
           handleCancelForm={handleCancelForm}
+          editingPin={editingPin}
         />
       )}
     </div>
