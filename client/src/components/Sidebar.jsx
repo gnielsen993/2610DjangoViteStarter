@@ -66,19 +66,19 @@ function Sidebar({ pins, onPinClick, onFilterChange }) {
             className={`filter-tab wishlisted ${activeFilter === 'wishlisted' ? 'active' : ''}`}
             onClick={() => handleFilterChange('wishlisted')}
           >
-            ⭐ {counts.wishlisted}
+            Wishlist {counts.wishlisted}
           </button>
           <button
             className={`filter-tab visited ${activeFilter === 'visited' ? 'active' : ''}`}
             onClick={() => handleFilterChange('visited')}
           >
-            ✓ {counts.visited}
+            Visited {counts.visited}
           </button>
           <button
             className={`filter-tab favorite ${activeFilter === 'favorite' ? 'active' : ''}`}
             onClick={() => handleFilterChange('favorite')}
           >
-            ❤️ {counts.favorite}
+            Favorites {counts.favorite}
           </button>
         </div>
 
@@ -95,9 +95,9 @@ function Sidebar({ pins, onPinClick, onFilterChange }) {
                 <div className="pin-item-header">
                   <h3>{pin.title}</h3>
                   <span className={`status-indicator status-${pin.status}`}>
-                    {pin.status === 'wishlisted' && '⭐'}
-                    {pin.status === 'visited' && '✓'}
-                    {pin.status === 'favorite' && '❤️'}
+                    {pin.status === 'wishlisted'}
+                    {pin.status === 'visited'}
+                    {pin.status === 'favorite'}
                   </span>
                 </div>
                 {pin.description && (

@@ -266,7 +266,7 @@ function PinMap() {
                     checked={formData.status === 'wishlisted'}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   />
-                  <label htmlFor="wishlisted">⭐ Wishlisted</label>
+                  <label htmlFor="wishlisted">Wishlisted</label>
                 </div>
                 <div className="radio-option">
                   <input
@@ -277,7 +277,7 @@ function PinMap() {
                     checked={formData.status === 'visited'}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   />
-                  <label htmlFor="visited">✓ Visited</label>
+                  <label htmlFor="visited">Visited</label>
                 </div>
                 <div className="radio-option">
                   <input
@@ -288,7 +288,7 @@ function PinMap() {
                     checked={formData.status === 'favorite'}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   />
-                  <label htmlFor="favorite">❤️ Favorite</label>
+                  <label htmlFor="favorite">Favorite</label>
                 </div>
               </div>
             </div>
@@ -302,7 +302,7 @@ function PinMap() {
                 className="form-checkbox"
               />
               <label htmlFor="is_public" className="form-label" style={{ marginBottom: 0 }}>
-                🌍 Make this pin public
+                Public
               </label>
             </div>
 
