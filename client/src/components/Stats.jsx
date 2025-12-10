@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Stats.css';
 
-function Stats({ onClose }) {
+function Stats(props) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +37,7 @@ function Stats({ onClose }) {
     <div className="stats-container">
       <div className="stats-header">
         <h1>My Travel Statistics</h1>
-        <button onClick={onClose} className="close-stats-btn">Back to Map</button>
+        <button onClick={props.onClose} className="close-stats-btn">Back to Map</button>
       </div>
       
       <div className="stats-grid">

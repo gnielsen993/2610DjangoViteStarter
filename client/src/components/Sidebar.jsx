@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Sidebar.css';
 
-function Sidebar({ pins, onPinClick, onFilterChange, onStatsClick }) {
+function Sidebar(props) {
   const [isOpen, setIsOpen] = useState(true);
   const [activeStatusFilter, setActiveStatusFilter] = useState('all');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('all');
@@ -13,29 +13,29 @@ function Sidebar({ pins, onPinClick, onFilterChange, onStatsClick }) {
 
   const handleStatusFilterChange = (filter) => {
     setActiveStatusFilter(filter);
-    onFilterChange({ status: filter, category: activeCategoryFilter });
+    props.onFilterChange({ status: filter, category: activeCategoryFilter });
   };
 
   const handleCategoryFilterChange = (filter) => {
     setActiveCategoryFilter(filter);
-    onFilterChange({ status: activeStatusFilter, category: filter });
+    props.onFilterChange({ status: activeStatusFilter, category: filter });
   };
 
   const getCounts = () => {
     return {
-      all: pins.length,
-      wishlisted: pins.filter(p => p.status === 'wishlisted').length,
-      visited: pins.filter(p => p.status === 'visited').length,
-      favorite: pins.filter(p => p.status === 'favorite').length,
-      trip: pins.filter(p => p.category === 'trip').length,
-      hotel: pins.filter(p => p.category === 'hotel').length,
-      restaurant: pins.filter(p => p.category === 'restaurant').length,
-      attraction: pins.filter(p => p.category === 'attraction').length,
-      other: pins.filter(p => p.category === 'other').length,
+      all: props.pins.length,
+      wishlisted: props.pins.filter(p => p.status === 'wishlisted').length,
+      visited: props.pins.filter(p => p.status === 'visited').length,
+      favorite: props.pins.filter(p => p.status === 'favorite').length,
+      trip: props.pins.filter(p => p.category === 'trip').length,
+      hotel: props.pins.filter(p => p.category === 'hotel').length,
+      restaurant: props.pins.filter(p => p.category === 'restaurant').length,
+      attraction: props.pins.filter(p => p.category === 'attraction').length,
+      other: props.pins.filter(p => p.category === 'other').length,
     };
   };
 
-  const filteredPins = pins.filter(pin => {
+  const filteredPins = props.pins.filter(pin => {
     const matchesStatusFilter = activeStatusFilter === 'all' || pin.status === activeStatusFilter;
     const matchesCategoryFilter = activeCategoryFilter === 'all' || pin.category === activeCategoryFilter;
     const matchesSearch = pin.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -54,7 +54,7 @@ function Sidebar({ pins, onPinClick, onFilterChange, onStatsClick }) {
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h2>My Pins</h2>
-          <button className="stats-button" onClick={onStatsClick}>
+          <button className="stats-button" onClick={props.onStatsClick}>
             View Stats
           </button>
         </div>
@@ -149,7 +149,7 @@ function Sidebar({ pins, onPinClick, onFilterChange, onStatsClick }) {
               <div 
                 key={pin.id} 
                 className="pin-item"
-                onClick={() => onPinClick(pin)}
+                onClick={() => props.onPinClick(pin)}
               >
                 <div className="pin-item-header">
                   <h3>{pin.title}</h3>

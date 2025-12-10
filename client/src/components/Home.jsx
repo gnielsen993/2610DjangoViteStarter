@@ -22,7 +22,7 @@ const icons = {
   favorite: createCustomIcon('red'),
 };
 
-function Home({ isAuthenticated, onNavigateToMap, onLogout }) {
+function Home(props) {
   const [pins, setPins] = useState([]);
   const [filteredPins, setFilteredPins] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -46,7 +46,7 @@ function Home({ isAuthenticated, onNavigateToMap, onLogout }) {
   };
 
   const handleCopyPin = async (pinId) => {
-    if (!isAuthenticated) {
+    if (!props.isAuthenticated) {
       alert('Please login to add pins to your collection');
       return;
     }
@@ -96,15 +96,15 @@ function Home({ isAuthenticated, onNavigateToMap, onLogout }) {
       <div className="home-content">
         <div className="home-sidebar">
           <div className="home-nav">
-            {isAuthenticated ? (
-                <>
-                    <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
-                    <button onClick={onLogout} className="nav-btn logout-btn">Logout</button>
-                </>
+            {props.isAuthenticated ? (
+              <>
+                <button onClick={props.onNavigateToMap} className="nav-btn">My Map</button>
+                <button onClick={props.onLogout} className="nav-btn logout-btn">Logout</button>
+              </>
             ) : (
-                <a href="/registration/sign_in/" className="nav-btn">Login</a>
+              <a href="/registration/sign_in/" className="nav-btn">Login</a>
             )}
-        </div>
+          </div>
           <h2>Categories</h2>
           <button 
             className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
