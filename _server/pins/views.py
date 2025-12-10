@@ -173,3 +173,36 @@ def update_pin(request, pin_id):
         except Pin.DoesNotExist:
             return JsonResponse({'error': 'Pin not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@login_required
+@csrf_exempt
+def copy_pin(request, pin_id):
+    if request.method == 'POST':
+        try:
+            original_pin = Pin.objects.get(id=pin_id)
+            copied_pin = Pin.objects.create(
+                user=request.user,
+                title=original_pin.title,
+                sections=original_pin.sections,
+                latitude=original_pin.latitude,
+                longitude=original_pin.longitude,
+                image=original_pin.image,
+                is_public=original_pin.is_public,
+                status=original_pin.status,
+                category=original_pin.category,
+            )
+            return JsonResponse({
+                'id': copied_pin.id,
+                'title': copied_pin.title,
+                'sections': copied_pin.sections,
+                'latitude': copied_pin.latitude,
+                'longitude': copied_pin.longitude,
+                'image': copied_pin.image.url if copied_pin.image else None,
+                'created_at': copied_pin.created_at.isoformat(),
+                "status": copied_pin.status,
+                "is_public": copied_pin.is_public,
+                "category": copied_pin.category,
+            })
+        except Pin.DoesNotExist:
+            return JsonResponse({'error': 'Original pin not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

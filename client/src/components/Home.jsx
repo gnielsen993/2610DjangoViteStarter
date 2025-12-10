@@ -45,6 +45,27 @@ function Home({ isAuthenticated, onNavigateToMap }) {
     }
   };
 
+  const handleCopyPin = async (pinId) => {
+    if (!isAuthenticated) {
+      alert('Please login to add pins to your collection');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/pins/${pinId}/copy/`, {
+        method: 'POST',
+        credentials: 'same-origin',
+      });
+
+      if (response.ok) {
+        alert('Pin added to your wishlist!');
+      }
+    } catch (error) {
+      console.error('Error copying pin:', error);
+      alert('Failed to add pin');
+    }
+  };
+
   const handleCategoryFilter = (category) => {
     setActiveCategory(category);
     if (category === 'all') {
@@ -72,19 +93,18 @@ function Home({ isAuthenticated, onNavigateToMap }) {
       <header className="home-header">
         <h1 className="home-title">Pin Traveler</h1>
       </header>
-
       <div className="home-content">
         <div className="home-sidebar">
-            <div className="home-nav">
-                {isAuthenticated ? (
-                    <>
-                        <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
-                        <a href="/registration/logout/" className="nav-btn logout-btn">Logout</a>
-                    </>
-                ) : (
-                    <a href="/registration/sign_in/" className="nav-btn">Login</a>
-                )}
-            </div>
+          <div className="home-nav">
+            {isAuthenticated ? (
+              <>
+                <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
+                <a href="/registration/logout/" className="nav-btn logout-btn">Logout</a>
+              </>
+            ) : (
+              <a href="/registration/sign_in/" className="nav-btn">Login</a>
+            )}
+          </div>
           <h2>Categories</h2>
           <button 
             className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
@@ -139,9 +159,32 @@ function Home({ isAuthenticated, onNavigateToMap }) {
               <Popup maxWidth={300}>
                 <div>
                   <strong>{pin.title}</strong>
-                  <p>By: {pin.user}</p>
-                  {pin.description && <p>{pin.description}</p>}
-                  {pin.image && <img src={pin.image} alt={pin.title} style={{width: '100%', maxHeight: '150px'}} />}
+                  {pin.sections && pin.sections.length > 0 && (
+                    <div style={{ marginTop: '8px' }}>
+                      {pin.sections.map((section, index) => (
+                        <div key={index} style={{ marginBottom: '5px' }}>
+                          <strong style={{ fontSize: '12px', color: '#2196F3' }}>{section.title}:</strong>
+                          <p style={{ margin: '2px 0', fontSize: '12px' }}>{section.content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {pin.image && <img src={pin.image} alt={pin.title} style={{width: '100%', maxHeight: '150px', marginTop: '8px'}} />}
+                  <button 
+                    onClick={() => handleCopyPin(pin.id)}
+                    style={{
+                      width: '100%',
+                      marginTop: '10px',
+                      padding: '8px',
+                      backgroundColor: '#4CAF50',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Add to My Pins
+                  </button>
                 </div>
               </Popup>
             </Marker>

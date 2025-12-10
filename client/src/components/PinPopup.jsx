@@ -1,6 +1,6 @@
 import './PinPopup.css';
 
-function PinPopup({ pin, onDelete, onEdit }) {
+function PinPopup({ pin, onDelete, onEdit, onClose, onCopy, currentUserId }) {
   const getStatusLabel = (status) => {
     const labels = {
       wishlisted: 'Wishlisted',
@@ -21,43 +21,62 @@ function PinPopup({ pin, onDelete, onEdit }) {
     return labels[category];
   };
 
+  const isOwner = pin.user_id === currentUserId;
+
   return (
-    <div className="pin-popup">
-      <strong className="pin-popup-title">{pin.title}</strong>
-      <div>
-        <span className={`pin-status-badge status-${pin.status}`}>
-          {getStatusLabel(pin.status)}
-        </span>
-        <span className={`privacy-badge privacy-${pin.is_public ? 'public' : 'private'}`}>
-          {pin.is_public ? 'Public' : 'Private'}
-        </span>
-      </div>
-      {pin.category && (
-        <div className="pin-category">
-          Category: {getCategoryLabel(pin.category)}
+    <div className="pin-detail-overlay" onClick={onClose}>
+      <div className="pin-detail-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="close-detail-btn" onClick={onClose}>×</button>
+        
+        {pin.image && (
+          <div className="pin-detail-image-container">
+            <img src={pin.image} alt={pin.title} className="pin-detail-image" />
+          </div>
+        )}
+        
+        <div className="pin-detail-content">
+          <h1 className="pin-detail-title">{pin.title}</h1>
+          
+          <div className="pin-detail-badges">
+            <span className={`pin-status-badge status-${pin.status}`}>
+              {getStatusLabel(pin.status)}
+            </span>
+            <span className={`privacy-badge privacy-${pin.is_public ? 'public' : 'private'}`}>
+              {pin.is_public ? 'Public' : 'Private'}
+            </span>
+            <span className="category-badge">
+              {getCategoryLabel(pin.category)}
+            </span>
+          </div>
+
+          {pin.sections && pin.sections.length > 0 && (
+            <div className="pin-sections-grid">
+              {pin.sections.map((section, index) => (
+                <div key={index} className="section-tile">
+                  <h3 className="section-tile-title">{section.title}</h3>
+                  <p className="section-tile-content">{section.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="pin-detail-actions">
+            {isOwner ? (
+              <>
+                <button onClick={() => onEdit(pin)} className="detail-edit-btn">
+                  Edit Pin
+                </button>
+                <button onClick={() => onDelete(pin.id)} className="detail-delete-btn">
+                  Delete Pin
+                </button>
+              </>
+            ) : (
+              <button onClick={() => onCopy(pin.id)} className="detail-copy-btn">
+                Add to My Pins
+              </button>
+            )}
+          </div>
         </div>
-      )}
-      {pin.description && <p className="pin-popup-description">{pin.description}</p>}
-      {pin.image && (
-        <img 
-          src={pin.image} 
-          alt={pin.title}
-          className="pin-popup-image"
-        />
-      )}
-      <div style={{ display: 'flex', gap: '5px' }}>
-        <button 
-          onClick={() => onEdit(pin)}
-          className="pin-edit-btn"
-        >
-          Edit
-        </button>
-        <button 
-          onClick={() => onDelete(pin.id)}
-          className="pin-delete-btn"
-        >
-          Delete
-        </button>
       </div>
     </div>
   );

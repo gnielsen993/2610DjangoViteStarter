@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { useState, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
@@ -41,6 +41,7 @@ function PinMap() {
   const [center] = useState([41.7370, -111.8338]);
   const [showForm, setShowForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [selectedPin, setSelectedPin] = useState(null);
   const [newPinLocation, setNewPinLocation] = useState(null);
   const [editingPin, setEditingPin] = useState(null);
   const [formData, setFormData] = useState({ 
@@ -81,6 +82,14 @@ function PinMap() {
     setShowForm(true);
   };
 
+  const handleMarkerClick = (pin) => {
+    setSelectedPin(pin);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedPin(null);
+  };
+
   const handlePinClick = (pin) => {
     if (mapRef.current) {
       mapRef.current.setView([pin.latitude, pin.longitude], 15);
@@ -110,6 +119,7 @@ function PinMap() {
   };
 
   const handleEditPin = (pin) => {
+    setSelectedPin(null);
     setEditingPin(pin);
     setFormData({
       title: pin.title,
@@ -206,6 +216,7 @@ function PinMap() {
 
       if (response.ok) {
         setPins(pins.filter(pin => pin.id !== pinId));
+        setSelectedPin(null);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -250,13 +261,21 @@ function PinMap() {
             key={pin.id} 
             position={[pin.latitude, pin.longitude]}
             icon={icons[pin.status]}
-          >
-            <Popup maxWidth={300}>
-              <PinPopup pin={pin} onDelete={handleDeletePin} onEdit={handleEditPin} />
-            </Popup>
-          </Marker>
+            eventHandlers={{
+              click: () => handleMarkerClick(pin)
+            }}
+          />
         ))}
       </MapContainer>
+
+      {selectedPin && (
+        <PinPopup 
+          pin={selectedPin} 
+          onDelete={handleDeletePin} 
+          onEdit={handleEditPin}
+          onClose={handleCloseDetail}
+        />
+      )}
 
       {showForm && (
         <PinForm

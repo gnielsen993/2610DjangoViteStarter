@@ -38,7 +38,7 @@ function PinForm({ formData, setFormData, imagePreview, handleImageChange, handl
             <div key={index} className="section-item">
               <input
                 type="text"
-                placeholder="Section title (e.g., Rides, Food)"
+                placeholder="Section title"
                 value={section.title}
                 onChange={(e) => handleSectionChange(index, 'title', e.target.value)}
                 className="form-input section-title-input"
