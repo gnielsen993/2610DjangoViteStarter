@@ -22,7 +22,7 @@ const icons = {
   favorite: createCustomIcon('red'),
 };
 
-function Home({ isAuthenticated, onNavigateToMap }) {
+function Home({ isAuthenticated, onNavigateToMap, onLogout }) {
   const [pins, setPins] = useState([]);
   const [filteredPins, setFilteredPins] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -97,14 +97,14 @@ function Home({ isAuthenticated, onNavigateToMap }) {
         <div className="home-sidebar">
           <div className="home-nav">
             {isAuthenticated ? (
-              <>
-                <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
-                <a href="/registration/logout/" className="nav-btn logout-btn">Logout</a>
-              </>
+                <>
+                    <button onClick={onNavigateToMap} className="nav-btn">My Map</button>
+                    <button onClick={onLogout} className="nav-btn logout-btn">Logout</button>
+                </>
             ) : (
-              <a href="/registration/sign_in/" className="nav-btn">Login</a>
+                <a href="/registration/sign_in/" className="nav-btn">Login</a>
             )}
-          </div>
+        </div>
           <h2>Categories</h2>
           <button 
             className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}

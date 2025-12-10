@@ -84,7 +84,7 @@ function App() {
     );
   }
 
-  return <Home isAuthenticated={isAuthenticated} onNavigateToMap={handleNavigateToMap} />;
+  return <Home isAuthenticated={isAuthenticated} onNavigateToMap={handleNavigateToMap} onLogout={logout} />;
 }
 
 export default App;
