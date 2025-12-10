@@ -162,7 +162,7 @@ function PinMap() {
         }
 
         const response = await fetch(`/api/pins/${editingPin.id}/update/`, {
-          method: 'PUT',
+          method: 'POST',
           credentials: 'same-origin',
           body: formDataToSend,
         });

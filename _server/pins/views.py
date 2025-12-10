@@ -133,7 +133,7 @@ def get_public_pins(request):
 @login_required
 @csrf_exempt
 def update_pin(request, pin_id):
-    if request.method == 'PUT':
+    if request.method == 'POST':
         try:
             pin = Pin.objects.get(id=pin_id, user=request.user)
             
