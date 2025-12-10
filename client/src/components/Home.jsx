@@ -144,7 +144,7 @@ function Home(props) {
           </button>
         </div>
 
-        <MapContainer center={center} zoom={2} className="home-map" zoomControl={false}>
+        <MapContainer center={center} zoom={3} className="home-map" zoomControl={false}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

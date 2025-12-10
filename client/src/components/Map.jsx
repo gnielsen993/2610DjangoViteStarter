@@ -246,7 +246,7 @@ function PinMap() {
 
       <MapContainer 
         center={center} 
-        zoom={2}
+        zoom={3}
         ref={mapRef}
         zoomControl={false}
       >
