@@ -26,15 +26,18 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  background-color: white;
+  background-color: transparent;
   border: none;
   font-size: 36px;
   cursor: pointer;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   z-index: 10;
   color: #333;
+}
+
+.close-detail-btn:hover {
+  color: #ff4444;
 }
 
 .close-detail-btn:hover {
