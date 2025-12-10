@@ -246,7 +246,7 @@ function PinMap() {
 
       <MapContainer 
         center={center} 
-        zoom={13}
+        zoom={2}
         ref={mapRef}
       >
         <TileLayer
