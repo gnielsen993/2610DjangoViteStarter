@@ -38,7 +38,7 @@ function MapClickHandler({ onMapClick }) {
 function PinMap() {
   const [pins, setPins] = useState([]);
   const [filteredPins, setFilteredPins] = useState([]);
-  const [center] = useState([41.7370, -111.8338]);
+  const [center] = useState([20, 0]);
   const [showForm, setShowForm] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [selectedPin, setSelectedPin] = useState(null);
