@@ -45,7 +45,7 @@ function PinMap() {
   const [editingPin, setEditingPin] = useState(null);
   const [formData, setFormData] = useState({ 
     title: '', 
-    description: '', 
+    sections: [],
     image: null,
     is_public: true,
     status: 'wishlisted',
@@ -113,7 +113,7 @@ function PinMap() {
     setEditingPin(pin);
     setFormData({
       title: pin.title,
-      description: pin.description,
+      sections: pin.sections || [],
       image: null,
       is_public: pin.is_public,
       status: pin.status,
@@ -141,7 +141,7 @@ function PinMap() {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description);
+      formDataToSend.append('sections', JSON.stringify(formData.sections));
       formDataToSend.append('is_public', formData.is_public);
       formDataToSend.append('status', formData.status);
       formDataToSend.append('category', formData.category);
@@ -161,7 +161,7 @@ function PinMap() {
           const updatedPin = await response.json();
           setPins(pins.map(p => p.id === updatedPin.id ? updatedPin : p));
           setShowForm(false);
-          setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
+          setFormData({ title: '', sections: [], image: null, is_public: true, status: 'wishlisted', category: 'other' });
           setImagePreview(null);
           setEditingPin(null);
         }
@@ -183,7 +183,7 @@ function PinMap() {
           const newPin = await response.json();
           setPins([...pins, newPin]);
           setShowForm(false);
-          setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
+          setFormData({ title: '', sections: [], image: null, is_public: true, status: 'wishlisted', category: 'other' });
           setImagePreview(null);
           setNewPinLocation(null);
         }
@@ -214,7 +214,7 @@ function PinMap() {
 
   const handleCancelForm = () => {
     setShowForm(false);
-    setFormData({ title: '', description: '', image: null, is_public: true, status: 'wishlisted', category: 'other' });
+    setFormData({ title: '', sections: [], image: null, is_public: true, status: 'wishlisted', category: 'other' });
     setImagePreview(null);
     setNewPinLocation(null);
     setEditingPin(null);

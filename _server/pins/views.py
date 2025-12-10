@@ -14,7 +14,7 @@ def get_pins(request):
         pin_data.append({
             'id': pin.id,
             'title': pin.title,
-            'description': pin.description,
+            'sections': pin.sections,
             'latitude': pin.latitude,
             'longitude': pin.longitude,
             'image':  pin.image.url if pin.image else None,
@@ -33,10 +33,11 @@ def add_pin(request):
         if request.content_type and 'multipart/form-data' in request.content_type:
 
             image = request.FILES.get('image') if 'image' in request.FILES else None
+            sections = json.loads(request.POST.get('sections', '[]'))
             pin = Pin.objects.create(
                 user=request.user,
                 title=request.POST.get('title'),
-                description=request.POST.get('description', ''),
+                sections = sections,
                 latitude=float(request.POST.get('latitude')),
                 longitude=float(request.POST.get('longitude')),
                 image= image,
@@ -49,7 +50,7 @@ def add_pin(request):
             pin = Pin.objects.create(
                 user=request.user,
                 title=data.get('title'),
-                description=data.get('description'),
+                sections=data.get('sections', []),
                 latitude=data.get('latitude'),
                 longitude=data.get('longitude'),
                 is_public=data.get('is_public', True),
@@ -60,7 +61,7 @@ def add_pin(request):
         return JsonResponse({
             'id': pin.id,
             'title': pin.title,
-            'description': pin.description,
+            'sections': pin.sections,
             'latitude': pin.latitude,
             'longitude': pin.longitude,
             'image': pin.image.url if pin.image else None,
@@ -118,7 +119,7 @@ def get_public_pins(request):
         pin_data.append({
             'id': pin.id,
             'title': pin.title,
-            'description': pin.description,
+            'sections': pin.sections,
             'latitude': pin.latitude,
             'longitude': pin.longitude,
             'image':  pin.image.url if pin.image else None,
@@ -135,21 +136,32 @@ def update_pin(request, pin_id):
     if request.method == 'PUT':
         try:
             pin = Pin.objects.get(id=pin_id, user=request.user)
-            data = json.loads(request.body)
-
-            pin.title = data.get('title', pin.title)
-            pin.description = data.get('description', pin.description)
-            pin.latitude = data.get('latitude', pin.latitude)
-            pin.longitude = data.get('longitude', pin.longitude)
-            pin.is_public = data.get('is_public', pin.is_public)
-            pin.status = data.get('status', pin.status)
-            pin.category = data.get('category', pin.category)
+            
+            if request.content_type and 'multipart/form-data' in request.content_type:
+                pin.title = request.POST.get('title', pin.title)
+                sections_data = request.POST.get('sections')
+                if sections_data:
+                    pin.sections = json.loads(sections_data)
+                pin.status = request.POST.get('status', pin.status)
+                pin.category = request.POST.get('category', pin.category)
+                pin.is_public = request.POST.get('is_public', 'true').lower() == 'true'
+                
+                if 'image' in request.FILES:
+                    pin.image = request.FILES['image']
+            else:
+                data = json.loads(request.body)
+                pin.title = data.get('title', pin.title)
+                pin.sections = data.get('sections', pin.sections)
+                pin.status = data.get('status', pin.status)
+                pin.category = data.get('category', pin.category)
+                pin.is_public = data.get('is_public', pin.is_public)
+            
             pin.save()
 
             return JsonResponse({
                 'id': pin.id,
                 'title': pin.title,
-                'description': pin.description,
+                'sections': pin.sections,
                 'latitude': pin.latitude,
                 'longitude': pin.longitude,
                 'image': pin.image.url if pin.image else None,
