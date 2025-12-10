@@ -25,7 +25,7 @@ function PinPopup({ pin, onDelete, onEdit, onClose, onCopy, currentUserId }) {
 
   return (
     <div className="pin-detail-overlay" onClick={onClose}>
-      <div className="pin-detail-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="pin-detail-model" onClick={(e) => e.stopPropagation()}>
         <button className="close-detail-btn" onClick={onClose}>×</button>
         
         {pin.image && (
