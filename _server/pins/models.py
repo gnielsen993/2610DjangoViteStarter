@@ -18,7 +18,7 @@ class Pin(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    description = models.TextField()
+    sections = models.JSONField(default=list, blank=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     image = models.ImageField(upload_to='pin_images/', null=True, blank=True)
