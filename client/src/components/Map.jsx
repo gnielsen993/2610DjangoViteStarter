@@ -248,6 +248,7 @@ function PinMap() {
         center={center} 
         zoom={2}
         ref={mapRef}
+        zoomControl={false}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
